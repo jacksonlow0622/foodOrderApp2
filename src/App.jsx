@@ -1,11 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
 import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
-import {Amplify, API, graphqlOperation} from 'aws-amplify';
+import {Amplify, API, graphqlOperation, Auth} from 'aws-amplify';
 import awsconfig from './aws-exports';
 import {Authenticator, withAuthenticator} from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import { createFoodOrder } from './graphql/mutations';
+import { createFoodOrder, updateFoodOrder } from './graphql/mutations';
 import {listFoodOrders} from './graphql/queries';
 import './graphql/mutations';
 import { GRAPHQL_AUTH_MODE } from '@aws-amplify/api'
@@ -17,6 +17,17 @@ Amplify.configure(awsconfig);
 function App() {
 
   const [inputs, setInputs] = useState({foodName: "Nasi Lemak"});
+
+  const [userEmail, setUserEmail] = useState('');
+
+  const [storedData, setStoredData] = useState('');
+
+  useEffect(() => {
+    Auth.currentAuthenticatedUser().then(user => {
+      console.log(user);
+      setUserEmail(user.attributes.email);
+    })
+  },[]);
 
   function uuidv4() {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -50,11 +61,12 @@ function App() {
         address: inputs.address, 
         food: inputs.foodName, 
         quantity: inputs.quantity, 
+        email: userEmail,
         status: "pending",
-        // createdAt: new Date().toISOString(),
-        // updatedAt: new Date().toISOString()
        }
     };
+
+    setStoredData(variable);
 
     try{
       console.log("what is name", inputs.username);
@@ -65,13 +77,31 @@ function App() {
 
       const FoodOrderData = await API.graphql(graphqlOperation(createFoodOrder, variable));
 
-      // const FoodOrderData = await API.graphql(
-      //   { 
-      //     query: createFoodOrder, 
-      //     variables: variable, 
-      //     // @ts-ignore
-      //     authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS 
-      //   });
+      window.alert("Successfully submit order!"); 
+
+    }catch(error){
+      console.log("error", error);
+    }
+  }
+
+  const handleSubmitComplete = async (event) => {
+    event.preventDefault();
+
+    try{
+
+      setStoredData(previousState => {
+        let targetData = {...previousState};
+        console.log("what is targetData: ", targetData);
+        targetData.input.status = "delivered";
+        return {targetData};
+      });
+
+      console.log("userEmail: ", userEmail);
+      console.log("storedData: ", storedData);
+
+      const UpdateFoodOrderData = await API.graphql(graphqlOperation(updateFoodOrder, storedData));
+
+      window.alert("Thanks for ordering with us. Enjoy your meal!");
 
     }catch(error){
       console.log("error", error);
@@ -140,7 +170,12 @@ function App() {
                 </br>
                 <br>
                 </br>
-                <input type="submit" />
+                <input type="submit" value="Submit Order"/>
+              </form>
+              <br>
+              </br>
+              <form onSubmit={handleSubmitComplete}>
+                <input type="submit" value="Complete Order"/>
               </form>
             </div>
           </div>

@@ -9,6 +9,7 @@ export const getFoodOrder = /* GraphQL */ `
       address
       food
       quantity
+      email
       status
       createdAt
       updatedAt
@@ -29,6 +30,7 @@ export const listFoodOrders = /* GraphQL */ `
         address
         food
         quantity
+        email
         status
         createdAt
         updatedAt

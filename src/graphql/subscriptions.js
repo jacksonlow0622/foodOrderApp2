@@ -12,6 +12,7 @@ export const onCreateFoodOrder = /* GraphQL */ `
       address
       food
       quantity
+      email
       status
       createdAt
       updatedAt
@@ -30,6 +31,7 @@ export const onUpdateFoodOrder = /* GraphQL */ `
       address
       food
       quantity
+      email
       status
       createdAt
       updatedAt
@@ -48,6 +50,7 @@ export const onDeleteFoodOrder = /* GraphQL */ `
       address
       food
       quantity
+      email
       status
       createdAt
       updatedAt

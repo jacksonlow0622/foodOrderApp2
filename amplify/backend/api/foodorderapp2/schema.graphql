@@ -8,5 +8,6 @@ type FoodOrder @model @auth(rules: [{allow: owner}]) {
   address: String!
   food: String!
   quantity: Int!
+  email: String!
   status: String!
 }
