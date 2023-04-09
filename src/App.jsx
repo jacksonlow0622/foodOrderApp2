@@ -115,7 +115,7 @@ function App() {
           <div className="App">
             <header className="App-header">
               <button onClick={signOut}>Sign out</button>
-                <h2>KLMY Food Ordering System</h2>
+                <h2>KLMY Restaurant Food Ordering System</h2>
             </header>
             <div>
               <form onSubmit={handleSubmit}>
@@ -172,6 +172,11 @@ function App() {
                 </br>
                 <input type="submit" value="Submit Order"/>
               </form>
+              <br>
+              </br>
+              <h2>
+                Press the following button to complete your order if you successfully received your food:
+              </h2>
               <br>
               </br>
               <form onSubmit={handleSubmitComplete}>
